@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cpulimittest
+spec:
+  containers:
+  - name: cpulimittest
+    image: busybox
+    resources:
+      requests:
+        cpu: ".5"
+      limits:
+        cpu: "1"
+    command: ["lscpu"]

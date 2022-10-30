@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: cars
+  name: cars
+spec:
+  containers:
+  - image: nginx
+    name: cars
+    env:
+    - name: hyundai
+      valueFrom:
+        configMapKeyRef:
+          name: hetchback
+          key: hyundai
+    envFrom:
+    - configMapRef:
+        name: suv
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

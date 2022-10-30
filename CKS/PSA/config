@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "k3s-jitan"
+  cluster:
+    server: "https://rancher.dsbu.cloud/k8s/clusters/c-6szjc"
+
+users:
+- name: "k3s-jitan"
+  user:
+    token: "kubeconfig-u-5u7bt6b3ygmrgss:fkkq4v6hc4dr8dxt45xpvktlfg5nxrj8gdrsfnbvxsp6vk29svtps8"
+
+
+contexts:
+- name: "k3s-jitan"
+  context:
+    user: "k3s-jitan"
+    cluster: "k3s-jitan"
+
+current-context: "k3s-jitan"

@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batchjob
+spec:
+  completions: 6
+  parallelism: 2
+  activeDeadlineSeconds: 15
+  template:
+    spec:
+      containers:
+        - name: batchjob
+          image: busybox
+          command: ["/bin/sleep"]
+          args: ["5"]
+      restartPolicy: Never

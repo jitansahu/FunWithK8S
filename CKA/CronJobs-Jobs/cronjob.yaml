@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: batchcronjob
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: batchjob
+              image: busybox
+              command: ["/bin/sh","-c","date;echo hi"]
+          restartPolicy: Never

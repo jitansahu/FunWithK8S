@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: DeamonSet
+metadata:
+  creationTimestamp: null
+  labels:
+    app: elastic-search
+  name: elastic-search
+  namespace: practice
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elastic-search
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: elastic-search
+    spec:
+      containers:
+      - image: k8s.gcr.io/fluentd-elasticsearch:1.20
+        name: fluentd-elasticsearch
+        resources: {}
+status: {}

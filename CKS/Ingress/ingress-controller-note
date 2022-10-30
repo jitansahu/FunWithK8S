@@ -1,0 +1,46 @@
+First deploy nginx-ingress controller with nodeport(not doing ELB)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.1/deploy/static/provider/baremetal/deploy.yaml
+
+Now, deploy 2 deployment with nginx image
+kubectl create namespace ingress-dev
+kubectl create deployment webserver-blr --image=nginx --replicas=3 -n ingress-dev
+kubectl create deployment webserver-dlh --image=nginx --replicas=3 -n ingress-dev
+
+Once you are done with the deployment, create the service for related deployments
+
+kubectl expose deployment webserver-blr --name=web-svc-blr --port=80 --target-port=80 -n ingress-dev
+kubectl expose deployment webserver-dlh --name=web-svc-dlh --port=80 --target-port=80 -n ingress-dev
+
+Now you have to create the ingress object for the service for external user to navigate to the service.
+
+cat << EOF | kubectl create -f - 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webblr
+  namespace: ingress-dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: web.example.com
+    http:
+      paths:
+      - path: /blr
+        pathType: Prefix
+        backend:
+          service:
+            name: web-svc-blr
+            port:
+              number: 8080
+      - path: /dlh
+        pathType: Prefix
+        backend:
+          service:
+            name: web-svc-dlh
+            port:
+              number: 8080
+EOF
+
+Once ingress deployment is complete, now you test you service routing

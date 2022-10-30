@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webblr
+  namespace: ingress-dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: web.example.com
+    http:
+      paths:
+      - path: /blr
+        pathType: Prefix
+        backend:
+          service:
+            name: web-svc-blr
+            port:
+              number: 8080
+      - path: /dlh
+        pathType: Prefix
+        backend:
+          service:
+            name: web-svc-dlh
+            port:
+              number: 8080
