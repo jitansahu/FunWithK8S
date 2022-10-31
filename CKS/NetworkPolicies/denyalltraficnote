@@ -1,0 +1,35 @@
+Network Policies
+
+# Testing deny setting to a deployment
+1.Create a namespace. I have used "prod" & add label to it "tier=prod"
+kubectl create namespace prod
+kubectl label namespace prod tier=prod
+
+2.Create a deployment using a image "nginx" & lable the deployment with "app=web". 
+Also expose the deployment with a service port 80.
+kubectl create deployment web --image=nginx -n prod
+kubectl label deployment web app=web
+kubectl expose deployment web --port=80
+kubectl scale deployment web --scale=3 # here i am increaing the replica no.
+
+3.Now try testing whether you able to access the web deployment in prod
+kubectl run -rm -it test-netpol --image=nginx -- bash
+curl -I http://[svc-name]/ # return 200 
+
+4.Create the Network Policy for deny all access to web server
+kubectl create -f deny-all-ingress.yaml
+
+5.Again try testing using curl command previously used
+kubectl run -rm -it test-netpol --image=nginx -- bash
+curl -I http://[svc-name]/ 
+
+# Allowing from another pod in same namespace
+6.Now deploy another network policy to allow a pod to access web server
+kubectl create -f allow-backend.yaml
+
+7.Now create another pod label it as "app=backend" & allow it access the web server in same
+namespace.
+kubectl run --rm -it test-netpol --image=nginx -n prod --labels="app=backend" -- bash
+curl -I http://[svc-name]/  # return 200
+
+# Allowing from another pod in different namespace
