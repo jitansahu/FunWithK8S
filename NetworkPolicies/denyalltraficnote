@@ -33,3 +33,13 @@ kubectl run --rm -it test-netpol --image=nginx -n prod --labels="app=backend" --
 curl -I http://[svc-name]/  # return 200
 
 # Allowing from another pod in different namespace
+8.Create a another namespace. I have used "dev" & add label to it "tier=dev"
+kubectl create namespace dev
+kubectl label namespace dev tier=dev
+
+9.Now deploy another network policy to allow a pod to access web server from "dev" namespace
+kubectl create -f allow-backend-devns.yaml
+
+10.Now create another pod label it as "app=backend" in "dev" namespace. Try to access pod in "prod" namespace
+kubectl run --rm -it test-$RANDOM --image=nginx -n dev --labels="app=backend" -- bash
+curl -I http://[svc-name]/  # return 200
